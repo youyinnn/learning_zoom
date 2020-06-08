@@ -1,0 +1,74 @@
+
+流的分类：
+    按操作数据单位不同分为：字节流(8 bit)，字符流(16 bit)
+    按数据流的流向不同分为：输入流，输出流
+    按流的角色的不同分为：节点流，处理流
+
+Input:把文件从外存读取到内存（程序）中
+Output:把文件从内存（程序）输出到外存文件中
+
+抽象基类      字节流        字符流
+ 输入流    InputStream      Reader
+ 输出流    OutputStream     Writer
+
+IO的异常处理，一般使用try-catch-finally语句，因为需要释放流资源。
+对于文本文件的复制操作，只能使用字符流，非文本文件只能使用字节流！
+
+IO体系
+抽象基类            节点流（文件流）        缓冲流（处理流的一种）      转换流
+InputStream         FileInputStream         BufferedInputStream         InputStreamReader
+OutputStream        FileOutputStream        BufferedOutputStream        OutputStreamWriter
+Reader              FileReader              BufferedReader
+Writer              FileWriter              BufferedWriter
+
+缓冲流：使用缓冲流，可以提升文件操作的效率（结点流的read()是阻塞式的）。
+
+转换流：
+    使用情景：
+        文本文件使用字节流读入的时候，我们要对字节流操作文本字符就比较尴尬，比如中文占多位字符等问题，这时候我们可以使用转换流
+    InputStreamReader将字节流转换为字符流，方便对字符进行操作。然后当需要将字符进行编码的时候，可以使用转换流OutputStreamWriter，
+    方便传输。
+    编码：字符串 转换为 字节数组
+    解码：字节数组 转换为 字符串
+
+标准输入输出流：
+    输入流：System.in       InputStream
+    输出流：System.out      PrintStream
+
+数据流：
+    传输基本数据类型    DataInputStream DataOutputStream
+
+
+对象流：
+    ObjectInputStream   ObjectOutputStream
+
+对象序列化机制
+    允许把内存中的Java对象转换成平台无关的二进制流，从而允许把这种二进制流持久地保存在磁盘上，或通过网络将这种二进制流传输到另一个网络节点。
+    当其它程序获取了这种二进制流，就可以恢复成原来的Java对象序列化的好处在于可将任何实现了Serializable接口的对象转化为字节数据，使其在保存和传输时可被还原.
+
+实现可序列化的类:
+    1、需要实现接口：Serializable
+    2、类的属性也需要实现：Serializable
+    3、需要提供一个版本号：private static final long serialVersionUID
+
+注意：对象流不能处理带有static和transient修饰的类或者成员变量，信息不能实现序列化而不能被加载进文件中！
+
+序列化是
+    RMI（Remote Method Invoke – 远程方法调用）过程的参数和返回值都必须实现的机制，而 RMI 是 JavaEE 的基础。因此序列化机制是 JavaEE 平台的基础
+如果需要让某个对象支持序列化机制，则必须让其类是可序列化的，为了让某个类是可序列化的，该类必须实现如下两个接口之一：Serializable、Externalizable
+
+凡是实现Serializable接口的类都有一个表示序列化版本标识符的静态变量：
+    private static final long serialVersionUID;
+    serialVersionUID用来表明类的不同版本间的兼容性.
+    如果类没有显式定义这个静态变量，它的值是Java运行时环境根据类的内部细节自动生成的。若类的源代码作了修改，serialVersionUID 可能发生变化。故建议，显示声明
+显示定义serialVersionUID的用途,希望类的不同版本对序列化兼容，因此需确保类的不同版本具有相同的serialVersionUID.
+    不希望类的不同版本对序列化兼容，因此需确保类的不同版本具有不同的serialVersionUID.
+
+随机访问文件：
+    RandomAccessFile 类支持 “随机访问” 的方式，程序可以直接跳到文件的任意地方来读、写文件
+    1、支持只访问文件的部分内容
+    2、可以向已存在的文件后追加内容
+RandomAccessFile 对象包含一个记录指针，用以标示当前读写处的位置。RandomAccessFile 类对象可以自由移动记录指针：
+    long getFilePointer()：获取文件记录指针的当前位置
+    void seek(long pos)：将文件记录指针定位到 pos 位置
+

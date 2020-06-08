@@ -1,0 +1,76 @@
+为什么需要内部类（inner class）：
+    1、内部类方法可以访问该类定义所在的作用域中的数据，包括私有数据。
+    2、内部类可以对同一个包中的其他类隐藏。
+    3、如果想要定义一个回调函数却又不想写大量代码时，使用匿名（anonymous）内部类比较便捷。
+
+内部类有一个隐式的引用对象：它指向创建它的外部类对象，所以内部类才可以引用外围类的成员。
+
+内部类的特殊语法规则：
+    外围类引用的正规语法规则：OuterClass.this
+
+内部类的意义、必要性、安全性：
+    1、内部类的语法复杂，这似乎违背了Java比C++要简单的设计理念。
+    2、内部类和访问控制和安全性等语言特性没有明显的关联。
+    3、内部类是一种编译器现象，和虚拟机无关。编译器会把内部类翻译成用$符号分割外部类名和内部类名的常规文件，虚拟机是不知道的。
+       例如例子中的TimePrinter类被翻译成TalkingClock$TimePrinter.class。
+    4、编译器为了引用外部类，会在内部类里面生成一个附加的实例域this$0，这个实例在写代码的时候并不能引用。
+    5、我们并不能仿照编译器实现的这种机制，如过我们把内部类写成常规类，把外部类的实例在内部类（这里写成了常规类）构造对象
+       的时候给内部类对象，但是我们发现这样做并不能访问外部类的私有成员，也就是我们模仿不了内部类的实现机制。
+
+局部内部类：
+    public void start(){
+        //局部内部类
+        class TimePrinter implements ActionListener{
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Time is :"+new Date());
+                if (beep) Toolkit.getDefaultToolkit().beep();
+                //实际的外围类引用语法
+                //if (TalkingClock.this.beep) Toolkit.getDefaultToolkit().beep();
+            }
+        }
+        ActionListener listener = new TimePrinter();
+        Timer t = new Timer(interval,listener);
+        t.start();
+    }
+    局部类不能用public private修饰 作用域被限定在声明这个局部类的块中。
+
+    局部类的优势：
+        1、对外部世界可以完全隐藏起来，即使TalkingClock类中的其他代码也不能访问他，出了start之外，没有任何方法知道TimePrinter的存在。
+        2、不仅可以访问包含他们的外部类，还可以访问局部变量，但是只能访问final修饰的局部变量，这说明这些变量一旦被赋值就不可被改变。
+
+
+匿名内部类（anonymous inner class）：
+    内部类的作用范围很小，而且一般只创建一个这个类的对象，这样就不必给类命名了。
+
+    public void start(int interval, boolean beep){
+        //anonymous inner class
+        ActionListener listener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Time is :"+new Date());
+                if (beep) Toolkit.getDefaultToolkit().beep();
+            }
+        };
+        Timer t = new Timer(interval,listener);
+        t.start();
+    }
+
+    这种语法的含义是：创建一个实现了ActionListener接口的类的新对象，需要实现的方法actionPerformed定义在｛｝内。
+
+    通常的语法格式为：
+    new SuperType(construction parameters){
+        //inner class methods and data
+    }
+    其中SuperType可以才ActionListener这样的接口，所以内部类就要实现这个接口，也可以是一个类，所以内部类就要拓展它。
+    由于构造器的名字必须和类名相同，而匿名内部类没有类名，所以，匿名内部类不能有构造器，所以将构造器参数传给超类构造器。
+
+    内部类在实现接口的时候，不能有任何构造参数还要用一下格式：
+    new InterfaceType(){
+        method and data
+    }
+
+静态内部类：
+    当内部类的使用只是为了把一个类隐藏在另一个类里，而不需要内部类引用外部对象，那么可以将该内部类声明为static，取消产生外部类引用。
+
+

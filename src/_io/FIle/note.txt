@@ -1,0 +1,34 @@
+1、java.io包：和输入输出相关的类、接口所在的包
+2、File是一个类，可以由构造器创建对象，对象对应这一个文件或者目录
+3、File类对象是和平台无关的
+4、File中的方法，只涉及到创建、删除、重命名等，如过涉及文件内容，就得使用io流来操作
+5、File对象常做io流类的参数。
+
+常用API:
+访问文件名：
+    getName()           获取文件名
+    getPath()           获取文件路径（相对）
+    getAbsoluteFile()   获取文件绝对路径名字的形式（返回的是File）
+    getAbsolutePath()   获取文件绝对路径名字字符串
+    getParent()         获取文件上层目录字符串
+    renameTo(File newName)  重命名文件
+文件检测
+    exists()            判断文件是否存在
+    canWrite()          判断文件是否可写
+    canRead()           判断文件是否可读
+    isFile()            判断文件是否是文件
+    isDirectory()       判断文件是否是文件夹
+获取常规文件信息
+    lastModified()      返回文件最后修改时间（long）
+    length()            返回文件大小（kb）
+文件操作相关
+    createNewFile()     创建文件
+    delete()            删除文件/文件夹
+目录操作相关
+    mkDir()             创建文件夹（要求上层目录必须存在）
+    mkDirs()            创建文件夹（如果上层目录不存在 连上层目录也创建）
+    list()              以String[]的形式返回文件目录下的所有文件名
+    listFiles()         以File的姓名返回文件目录下的所有文件
+
+
+
